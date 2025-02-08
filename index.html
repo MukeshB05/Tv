@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<script type='text/javascript' src="https://cdn.jsdelivr.net/npm/afterglowplayer@1/dist/afterglow.min.js"></script>
+        <title>wasi TV - Live TV Free</title>
+        <style>
+            ::-webkit-scrollbar {
+                display: none;
+            }
+            :root {
+                --plyr-color-main: #fc801c;
+            }
+            * {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                outline:none;
+            }
+            body {
+                margin: 0;
+                background: #000;
+                font-family: Arial, Helvetica, sans-serif;
+                line-height: 1.5;
+                color: #fff;
+                text-align: center;
+            }
+            #root button {
+                display: block;
+                margin: 5px;
+                padding: 1px;
+				height:70px;
+                width:70px;
+                border: none;
+                border-radius: 50px;
+
+                color: #fff;
+                border: 2px solid #211f1f;
+                text-transform: capitalize;
+            }
+            #root button:hover {
+                background-color:  red;
+box-shadow:inset 0 0 3px #0f0,
+              0 0 13px #0f0,
+              0 0 0px #0f0,
+              0 10px  0 #0f0,
+              0 0 0px #0f0,
+              0 0 10px #0f0,
+              0 0 10px #0f0;
+                color: #fff;
+                cursor:pointer;
+                border:2px solid #fff;
+
+   animation: animate 0.5s linear infinite;
+}
+
+@keyframes animate 
+{
+    0%
+    {
+     filter: hue-rotate(0deg);
+    }
+    100%
+    {
+     filter: hue-rotate(360deg);
+    }
+            }
+            .box.flex {
+              display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                align-items: center;
+
+            }
+            .box {
+                box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.03);
+                border-radius: 0px;
+                color: #fff;
+                border-bottom: 1px solid #f9f2d6;
+                
+            }
+
+            .heading {
+                margin: 5px auto;
+                text-align: center;
+            }
+            #playerContainer {
+                z-index: 999;
+                width:100%;
+
+            }
+
+            .blink {
+                animation-name: blinker;
+                animation-duration: 1s;
+                animation-timing-function: linear;
+                animation-iteration-count: infinite;
+            }
+            @keyframes blinker {
+                0% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0;
+                }
+                100% {
+                    opacity: 1;
+                }
+            }
+
+          
+
+            .blob img {
+                width: 50%;
+                display: block;
+                margin: auto;
+                margin-top: 25px;
+            }
+            .blob {
+                background: #000;
+                border-radius: 50%;
+                box-shadow: 0 0 0 0 #000;
+                margin: 5px;
+                height: 60px;
+                width: 60px;
+                transform: scale(0.51);
+                animation: pulse-black 1s infinite;
+            }
+            @keyframes pulse-black {
+                0% {
+                    transform: scale(0.65);
+                    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+                }
+                70% {
+                    transform: scale(0.75);
+                    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.7);
+                }
+                100% {
+                    transform: scale(0.65);
+                    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+                }
+            }
+            .switch {
+  position: relative;
+  display: inline-block;
+  width: auto;
+  height:auto;
+  padding:8px 10px;
+  border:1px solid red;
+  border-radius:20px;
+                  background: #fff;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+
+
+}
+
+            .rmp-time-total,.rmp-loaded,.rmp-handle,.rmp-current{
+                border-radius:50px!important;
+                display:none;
+            }
+            .rmp-time-elapsed,.rmp-duration{display:none;}
+            
+   .rewind{ position:fixed;
+margin-left:138px;
+z-index: 999999;
+
+
+
+  
+	}
+	
+	
+	.print{height:60px;
+width:60px;
+
+border:1.5px solid #999;
+padding:;
+ margin:;
+ border-radius:50%;
+}
+marquee{
+border-radius: 6px 0px 0px  6px;
+width: 90%;
+border:2px solid red;
+margin: auto;
+   font-weight:bold;
+   color:#fff;
+display: block;
+
+}
+
+.marquee span{display: inline-block;
+ background: #ff0000;
+ border-radius:  0px 6px 6px 0px;
+ /* padding: 0px 10px;*/
+   color: #fff;
+   padding:2px;
+   font-weight:bold;
+    display: inline-block;
+     float: right;
+      width: auto;
+       line-height: 35px;}
+       
+       .marquee marquee{display: block;
+        line-height: 35px;
+        background:#000;
+         z-index: -1; 
+         margin-right: 10px;
+          width: auto; 
+          margin: auto;}
+
+.cont{
+position:fixed;
+}
+
+
+        </style>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    </head>
+    <body oncontextmenu="return false">
+
+       <div class="cont" >
+       	            <video controls poster="https://bit.ly/wasitvp" id='videoplayer'  class='afterglow'  title='Video 01' data-skin="light"  width='16' height='9' data-autoresize="fit" controls src="https://d2i5qoshktwlgu.cloudfront.net/islamic/Qurantranslation/parah1.MP4"></video>
+            
+       <div class="marquee yellow"><span>:نوٹ</span> 
+     <marquee scrollamount="5" direction="left" onmouseover="stop()" onmouseout="start()">Hacked By Sagheer Ali 03150456806 _Tera Baap Hy Sagheer Khan ....</marquee> </div>
+<div class="rewind"><button style=" background:#000;font-weight:bold; border :1px solid #000;border-radius:20px; padding:0;"> <label class="switch">
+	Rewind<input type="datetime-local" name="rewi" id="rewi">
+</button>
+
+</label>
+
+</div> 
+	
+</div>
+
+
+        <div id="root" class="box flex" >
+
+	<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/Tensports-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/ten-sports-hd-logo.webp?id=41" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/ARYnews-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/1684242189-logo.webp?id=75" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/geoNews-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/geo-news-live.webp?id=60" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/tamashaquiz-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/1699967352-logo.webp?id=99" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/humTV-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/HUM-TV-Channel-logo.webp?id=30" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/ARYdigital-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/ary-digital-live-logo.webp?id=71" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/GeoEntertainment-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/geo-entertainment-live.webp?id=76" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/BolEntertainment-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/bol-entertainment-live.webp?id=60" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/expressnews-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/express-news-live.webp?id=19" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/DawnNews-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/dawn-news-live.webp?id=71" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/BolNews-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/bol-news-live.webp?id=31" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/humnews-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/HUM-News-Channel-logo.webp?id=85" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/AAN-TV-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/1681977574-logo.webp?id=87" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/Eurosport-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/1686912440-logo.webp?id=51" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/ARYzindagi-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/ary-zindagi-live-logo.webp?id=36" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/HumSitaray-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/HUM-Sitaray-Channel-logo.webp?id=86" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/hummasala-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/HUM-Masala-Channel-logo.webp?id=62" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/Livecnn-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/cnn-news-live.webp?id=16" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/cartoonnetwork-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/cartoon-network-live.webp?id=92" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/ExpressEntertainment-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/express-entertainment-live.webp?id=71" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/SabTV-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/1686044497-logo.webp?id=63" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/ABNnews-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/1686912075-logo.webp?id=43" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/TVOne-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/tv-one-live.webp?id=59" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/Madni-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/madani-channel-live.webp?id=67" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/GNN-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/gnn-live.webp?id=79" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/filmworld-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/filmworld-live.webp?id=57" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/Filmax-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/filmax-live.webp?id=43" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/KashishTV-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/kashish-live.webp?id=13" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/AajNews-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/aaj-news-live.webp?id=50" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/Aplus-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/a-plus-live.webp?id=39" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/sindhTV-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/sindh-tv-live.webp?id=47" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/LTNFamily-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/ltn-family-live.webp?id=48" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/NeoNews-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/neo-tv-live.webp?id=55" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/ktnNews-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/ktn-news-live.webp?id=82" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/AroojTV-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/aruj-live.webp?id=68" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/24News-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/channel-24-live.webp?id=22" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/SachTV/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/such-tv-live.webp?id=47" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/RozNews-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/roze-news-live.webp?id=84" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/play-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/play-tv-live.webp?id=99" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/AajEntertainment-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/aaj-entertainment-live.webp?id=86" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/DiscoveryPakistan-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/discover-pakistan-live-logo.webp?id=67" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/LahoreRung-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/lahore-rang-logo.webp?id=57" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/NewsOne-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/news-one-live.webp?id=96" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/MehranTV-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/mehran-tv-logo.webp?id=64" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/PublicTV-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/public-news-live.webp?id=50" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/A1TV-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/a1-tv-live.webp?id=24" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/AVTkhyberTV-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/1685537734-logo.webp?id=62" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/Channel5-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/channel-five-live.webp?id=18" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/city42(vnw)-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/city-42-live.webp?id=80" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/Metro1News-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/metro-1-news-live.webp?id=78" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/SindhNews-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/sindh-tv-news-live.webp?id=32" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/AfghanTV-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/afghan-tv-live.webp?id=94" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/TimeNews-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/time-news-live.webp?id=96" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/RohiTV-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/rohi-live.webp?id=67" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/KhyberNews-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/1685537412-logo.webp?id=94" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/K21-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/k21-news-live.webp?id=93" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/SaudiSunnah(NW)-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/saudi-sunnah-madinah-tv-hd-live.webp?id=42" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/waseeb-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/waseb-live.webp?id=22" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/city41News-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/city41-live.webp?id=88" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/Saudimakkah(nw)-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/saudi-quran-makkah-tv-hd-live.webp?id=28" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/mashriqtv-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/mashriq-tv-live.webp?id=74" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/DWNews-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/DW-english-live.webp?id=73" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/KohinoorTV-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/kohenoor-tv-live.webp?id=16" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/samaaTV-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/samaa-tv-live.webp?id=53" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/8xm-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/8xm-live.webp?id=73" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/ktnEntertainment-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/ktn-entertainment-live.webp?id=35" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/urdu-1-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/urdu-1-live.webp?id=58" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/BabyTV-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/baby-tv-live.webp?id=88" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/Apna-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/apna-tv-live.webp?id=84" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/abbtak-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/abb-takk-news-live.webp?id=23" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/jalwa-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/jalwa-tv-live.webp?id=59" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/MovieOne-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/movie-one-live.webp?id=79" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/seeTV-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/see-tv-live.webp?id=55" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/championtv-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/champion-tv-live.webp?id=43" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/Kay2-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/1685535127-logo.webp?id=65" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/PNN-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/pnn-news-live.webp?id=91" ></button>
+<button channel="https://cdn07isb.tamashaweb.com:8087/jazzauth/Pashto1-abr/playlist.m3u8" ><img class="print" src="https://canvas.tamashaweb.com/jazzlive/uploads/channels/logo/HUM-Pashto-Channel-logo.webp?id=20" ></button>
+        <!--Edit these Buttons only -->
+        </div>
+        <footer>
+            <h2 class="heading red blink logoText">WASI TV</h2>
+            <p>
+                <script>
+                    document.write(new Date().getFullYear() + " &copy; <span class='logoText'>WASI TV</span> All Rights Reserved");
+                </script>
+            </p>
+        </footer>
+        <script>
+            $(document).ready(function () {
+
+
+                async function channel(videoId) {
+                    var myHeaders = new Headers();
+                    myHeaders.append("Content-Type", "application/json");
+                    var corsURI = "https://cors-anywhere.herokuapp.com/";
+                    //await the response of the fetch call
+
+                }
+  
+
+var channelButtons = $("[channel]");
+                var i;
+                for (i = 0; i < channelButtons.length; i++) {
+                    channelButtons[i].onclick = function (e) {
+                        var slug = e.currentTarget.getAttribute("channel");
+
+var url = "https://jazztv.pk/alpha/api_gateway/index.php/media/get-channel-url";
+
+var xhr = new XMLHttpRequest();
+xhr.open("POST", url);
+
+xhr.setRequestHeader("Authorization", "bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9qYXp6dHYucGtcL2FscGhhXC9hcGlfZ2F0ZXdheVwvaW5kZXgucGhwXC9hdXRoXC9sb2dpbiIsImlhdCI6MTY2NDY0NDQzOCwiZXhwIjoxNjY0NjgwNDM4LCJuYmYiOjE2NjQ2NDQ0MzgsImp0aSI6Ink3aGZJZ2xBdElsVDM2bFUiLCJzdWIiOjYsInBydiI6Ijg3ZTBhZjFlZjlmZDE1ODEyZmRlYzk3MTUzYTE0ZTBiMDQ3NTQ2YWEifQ.gag30drbUN2FUvjPoJ-vqiZCjuIgKgl8FgQw4Dh8ERY");
+xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+xhr.setRequestHeader("Content-Length", "158");
+xhr.setRequestHeader("Host", "jazztv.pk");
+xhr.setRequestHeader("Connection", "Keep-Alive");
+xhr.setRequestHeader("Accept-Encoding", "gzip");
+xhr.setRequestHeader("User-Agent", "okhttp/3.10.0");
+
+xhr.onreadystatechange = function () {
+   if (xhr.readyState === 4) {
+   
+       
+fetch("https://sagheerali.site/sagheerkhan_terabaap-hy.php",
+{
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    method: "POST",
+    body: xhr.responseText
+})
+  .then((response) => {
+    return response.json();
+  })
+  .then((data) => {
+
+//var videoURL = data.data.RewindStreamUrl;
+var videoURL = data.data.CastStreamingUrls;
+var token = videoURL.slice(videoURL.indexOf('?'));
+var both = slug+token;
+afterglow.getPlayer('videoplayer').src(both).play();
+
+
+$("#rewi").on("change",function(){
+var selected = $(this).val();
+
+  const response =  fetch("https://sagheerali.site/sagheerkhan_terabaap-hy.php", {
+    method: "POST",
+    body: JSON.stringify({ts:selected,url:afterglow.getPlayer('videoplayer').cache_.src}),
+  })
+  .then(response => response.text())
+  .then(data => {
+ console.log(data); 	
+afterglow.getPlayer('videoplayer').src(data).play();
+    
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
+})
+
+
+})
+}}
+
+
+var data = "device_id=d76e4516dda9434d&user_id=&ip=&mobile=&package_id=&type=channel&slug=madani-channel-live&phone_details=HUAWEI%20BKL-L09%20%289%29-%20App-Version%2830091%29";
+
+xhr.send(data);
+
+                    };
+                }
+                
+    
+
+            
+            
+
+      
+                $(function () {
+                    $(window).scroll(
+                        (function fix_element() {
+                            $(".cont").css($(window).scrollTop() > 1 ? { position: "fixed", top: "0px" } : { position: "relative", top: "auto" });
+
+                            $("#root").css($(window).scrollTop() > 1 ? { "margin-top": $("video").height() } : { "margin-top": "10px" });
+                            return fix_element;
+                        })()
+                    );
+                });
+            });
+
+            
+
+
+  </script>
+
+
+    </body>
+</html>
